@@ -6,7 +6,7 @@ use crate::{
     state::{SavingsAccount, SavingsType},
     ProtocolState,
 };
-use anchor_lang::{prelude::*, solana_program::address_lookup_table::instruction};
+use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
     token_interface::{self, Mint, TokenAccount, TransferChecked},
@@ -49,4 +49,15 @@ pub struct Withdraw<'info> {
     pub token_program: Interface<'info, token_interface::TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
+}
+
+pub fn withdraw_handler(
+    ctx: Context<Withdraw>,
+    amount: u64,
+    unlock_price: Option<u64>,
+    lock_duration: Option<i64>,
+) -> Result<()> {
+    let savings_account = &ctx.accounts.savings_account;
+
+    Ok(())
 }
