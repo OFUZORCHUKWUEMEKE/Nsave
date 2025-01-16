@@ -12,7 +12,7 @@ pub struct InitializeSavings<'info> {
     pub mint: InterfaceAccount<'info, Mint>,
     #[account(
         init_if_needed,
-        seeds=[b"protocol"],
+        seeds=[b"protocol",signer.key().as_ref()],
         bump,
         payer=signer,
         space=DISCRIMINATOR + ProtocolState::INIT_SPACE
@@ -58,8 +58,8 @@ pub fn initialize(
     savings_account.bump = ctx.bumps.savings_account;
     savings_account.created_at = Clock::get()?.unix_timestamp;
     if savings_account.amount > 0 {
-        let new = savings_account.amount.checked_add(amount);
-        savings_account.amount = new.unwrap();
+        let new = savings_account.amount.checked_add(amount).unwrap();
+        savings_account.amount = new;
     } else {
         savings_account.amount = amount;
     }
