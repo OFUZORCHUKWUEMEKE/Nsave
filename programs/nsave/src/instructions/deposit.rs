@@ -53,7 +53,6 @@ pub fn deposit_handler(
 ) -> Result<()> {
     let vault_sol_account = &mut ctx.accounts.savings_account;
     let protocol_state = &mut ctx.accounts.protocol_state;
-
     if is_sol == true {
         let cpi_ctx = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),

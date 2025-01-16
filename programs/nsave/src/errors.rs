@@ -14,4 +14,6 @@ pub enum NonceError {
     Overflow,
     #[msg("USD Price not yet reached")]
     PriceNotReached,
+    #[msg("Invalid Price Feed")]
+    InvalidPriceFeed,
 }
