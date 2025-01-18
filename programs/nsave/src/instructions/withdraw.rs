@@ -11,8 +11,7 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token_interface::{self, Mint, TokenAccount, TransferChecked},
 };
-use pyth_sdk_solana::{self, load_price_feed_from_account_info, state::SolanaPriceAccount};
-use pyth_solana_receiver_sdk::price_update::{get_feed_id_from_hex, PriceUpdateV2};
+// use pyth_solana_receiver_sdk::price_update::{get_feed_id_from_hex, PriceUpdateV2};
 // use pyth_solana_receiver_sdk::price_update::{get_feed_id_from_hex, PriceUpdateV2};
 
 #[derive(Accounts)]
@@ -47,7 +46,7 @@ pub struct Withdraw<'info> {
     pub user_ata: InterfaceAccount<'info, TokenAccount>,
     // #[account(address = Pubkey::from_str(SOL_USD_FEED_ID).unwrap() @ NonceError::InvalidPriceFeed)]
     // pub price_feed: AccountInfo<'info>,
-    pub price_update: Account<'info, PriceUpdateV2>,
+    // pub price_update: Account<'info, PriceUpdateV2>,
     pub token_program: Interface<'info, token_interface::TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -60,7 +59,7 @@ pub fn withdraw_handler(
     lock_duration: Option<i64>,
 ) -> Result<()> {
     let savings_account = &ctx.accounts.savings_account;
-    let price_update = &mut ctx.accounts.price_update;
+    // let price_update = &mut ctx.accounts.price_update;
 
     let seeds = &[
         ctx.accounts.savings_account.name.as_bytes(),
@@ -74,17 +73,18 @@ pub fn withdraw_handler(
     match savings_account.savings_type {
         SavingsType::PriceLockedSavings => {
             if savings_account.is_sol {
-                let sol_feed_id = get_feed_id_from_hex(SOL_USD_FEED_ID);
-                let sol_price = price_update.get_price_no_older_than(
-                    &Clock::get()?,
-                    MAXIMUM_AGE,
-                    &sol_feed_id?,
-                )?;
-                msg!(
-                    "sol price is {} sol conf is {} ",
-                    sol_price.price,
-                    sol_price.conf
-                );
+                // let sol_feed_id = get_feed_id_from_hex(SOL_USD_FEED_ID);
+                // let sol_price = price_update.get_price_no_older_than(
+                //     &Clock::get()?,
+                //     MAXIMUM_AGE,
+                //     &sol_feed_id?,
+                // )?;
+                // msg!(
+                //     "sol price is {} sol conf is {} ",
+                //     sol_price.price,
+                //     sol_price.conf
+                // );
+                
             }
         }
         _ => {
