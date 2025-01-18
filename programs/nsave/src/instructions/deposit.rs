@@ -20,14 +20,18 @@ pub struct Deposit<'info> {
         seeds=[name.as_bytes(),signer.key().as_ref(),description.as_bytes()],
         bump=savings_account.bump
     )]
-    pub savings_account: Account<'info, SavingsAccount>,
+    pub savings_account: Box<Account<'info, SavingsAccount>>,
+    #[account(
+        mut,
+        seeds=[b"vault",savings_account.key().as_ref()],
+        bump
+    )]
+    pub token_vault_account: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
     #[account(
         mut,
         seeds=[b"vault",signer.key().as_ref()],
         bump
     )]
-    pub token_vault_account: InterfaceAccount<'info, token_interface::TokenAccount>,
-    #[account(mut)]
     pub protocol_state: Account<'info, ProtocolState>,
     pub mint: InterfaceAccount<'info, Mint>,
     #[account(
@@ -35,7 +39,7 @@ pub struct Deposit<'info> {
         associated_token::mint=mint,
         associated_token::authority = signer
     )]
-    pub user_ata: InterfaceAccount<'info, TokenAccount>,
+    pub user_ata: Box<InterfaceAccount<'info, TokenAccount>>,
     pub token_program: Interface<'info, token_interface::TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
