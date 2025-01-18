@@ -25,20 +25,20 @@ pub struct Withdraw<'info> {
         seeds=[name.as_bytes(),signer.key().as_ref(),description.as_bytes()],
         bump=savings_account.bump
     )]
-    pub savings_account: Account<'info, SavingsAccount>,
-    pub mint: InterfaceAccount<'info, Mint>,
+    pub savings_account: Box<Account<'info, SavingsAccount>>,
+    pub mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(
         mut,
         seeds=[b"vault",signer.key().as_ref()],
         bump
     )]
-    pub token_vault_account: InterfaceAccount<'info, token_interface::TokenAccount>,
+    pub token_vault_account: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
     #[account(
         mut,
         seeds=[b"protocol",signer.key().as_ref()],
         bump
     )]
-    pub protocol_state: Account<'info, ProtocolState>,
+    pub protocol_state: Box<Account<'info, ProtocolState>>,
     #[account(
         mut,associated_token::mint = mint,
         associated_token::authority = savings_account,
@@ -84,7 +84,6 @@ pub fn withdraw_handler(
                 //     sol_price.price,
                 //     sol_price.conf
                 // );
-                
             }
         }
         _ => {
