@@ -5,7 +5,7 @@ use anchor_spl::token_interface;
 use anchor_spl::token_interface::Mint;
 
 #[derive(Accounts)]
-#[instruction(name:String,description:String,savings_type:SavingsType,is_sol:bool)]
+#[instruction(name:String,description:String,is_sol:bool)]
 pub struct InitializeSavings<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
@@ -43,8 +43,8 @@ pub fn initialize(
     ctx: Context<InitializeSavings>,
     name: String,
     description: String,
-    savings_type: SavingsType,
     is_sol: bool,
+    savings_type: SavingsType,
     amount: u64,
     lock_duration: Option<i64>,
     unlock_price: Option<u64>,
