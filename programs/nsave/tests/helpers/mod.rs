@@ -49,13 +49,15 @@ pub fn initialize(
 ) -> Instruction {
     let (protocol, _) = Pubkey::find_program_address(&[b"protocol", signer.as_ref()], &program_id);
 
-    let (savings_pubkey, _) =
-        Pubkey::find_program_address(&[b"name", signer.as_ref(), b"description"], &program_id);
+    let (savings_pubkey, _) = Pubkey::find_program_address(
+        &[name.as_bytes(), signer.as_ref(), description.as_bytes()],
+        &program_id,
+    );
 
     let (vault_pubkey, _) =
         Pubkey::find_program_address(&[b"vault", savings_pubkey.as_ref()], &program_id);
 
-    Instruction {
+    return Instruction {
         program_id,
         accounts: anchor_lang::ToAccountMetas::to_account_metas(
             &nsave::accounts::InitializeSavings {

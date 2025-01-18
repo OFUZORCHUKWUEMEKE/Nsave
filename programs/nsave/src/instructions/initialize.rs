@@ -9,7 +9,7 @@ use anchor_spl::token_interface::Mint;
 pub struct InitializeSavings<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub mint: InterfaceAccount<'info, Mint>,
+    pub mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(
         init_if_needed,
         seeds=[b"protocol",signer.key().as_ref()],
@@ -17,7 +17,7 @@ pub struct InitializeSavings<'info> {
         payer=signer,
         space=DISCRIMINATOR + ProtocolState::INIT_SPACE
     )]
-    pub protocol: Account<'info, ProtocolState>,
+    pub protocol: Box<Account<'info, ProtocolState>>,
     #[account(
         init_if_needed,
         payer=signer,
@@ -26,7 +26,7 @@ pub struct InitializeSavings<'info> {
         seeds=[b"vault",savings_account.key().as_ref()],
         bump
     )]
-    pub token_vault_account: InterfaceAccount<'info, token_interface::TokenAccount>,
+    pub token_vault_account: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
     #[account(
         init,
         seeds=[name.as_bytes(),signer.key().as_ref(),description.as_bytes()],
@@ -34,7 +34,7 @@ pub struct InitializeSavings<'info> {
         payer=signer,
         space=DISCRIMINATOR + SavingsAccount::INIT_SPACE,
     )]
-    pub savings_account: Account<'info, SavingsAccount>,
+    pub savings_account: Box<Account<'info, SavingsAccount>>,
     pub token_program: Interface<'info, token_interface::TokenInterface>,
     pub system_program: Program<'info, System>,
 }

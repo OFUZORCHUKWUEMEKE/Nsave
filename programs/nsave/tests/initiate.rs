@@ -15,7 +15,7 @@ use {
 
 #[tokio::test]
 async fn test_successful_initiate() {
-    let mut test = ProgramTest::new("Nsave", nsave::id(), None);
+    let mut test = ProgramTest::new("nsave", nsave::id(), None);
 
     test.set_compute_max_units(100_000);
 
@@ -63,4 +63,28 @@ async fn test_successful_initiate() {
         )],
         Some(&payer.pubkey()),
     );
+    transaction.sign(&[&payer, &maker], recent_blockhash);
+    banks_client.process_transaction(transaction).await.unwrap();
+
+    let (savings_pubkey, _) = Pubkey::find_program_address(
+        &[
+            name.as_bytes(),
+            maker.pubkey().as_ref(),
+            description.as_bytes(),
+        ],
+        &nsave::id(),
+    );
+
+    let savings = banks_client
+        .get_account(savings_pubkey)
+        .await
+        .unwrap()
+        .unwrap();
+
+    // Deserialize the account data
+    let mut account_data = savings.data.as_ref();
+    let escrow_account = SavingsAccount::try_deserialize(&mut account_data).unwrap();
+
+    assert_eq!(escrow_account.owner, maker.pubkey());
+    assert_eq!(escrow_account.amount, 1000);
 }
