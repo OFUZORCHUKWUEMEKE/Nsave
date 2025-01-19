@@ -82,3 +82,48 @@ pub fn initialize(
         }),
     };
 }
+
+pub fn deposit(
+    program_id: Pubkey,
+    mint: Pubkey,
+    token_program: Pubkey,
+    signer: Pubkey,
+    name: String,
+    description: String,
+    savings_type: SavingsType,
+    is_sol: bool,
+    savings_account: Pubkey,
+    token_vault_account: Pubkey,
+    protocol_state: Pubkey,
+    amount: u64,
+    _time_lock: Option<i64>,
+    _unlock_price: Option<u64>,
+) -> Instruction {
+    let user_ata = Pubkey::new_unique();
+    return Instruction {
+        program_id,
+        accounts: anchor_lang::ToAccountMetas::to_account_metas(
+            &nsave::accounts::Deposit {
+                signer,
+                savings_account,
+                token_vault_account,
+                protocol_state,
+                mint,
+                user_ata,
+                token_program,
+                associated_token_program: spl_associated_token_account::id(),
+                system_program: system_program::id(),
+            },
+            None,
+        ),
+        data: anchor_lang::InstructionData::data(&nsave::instruction::DepositSavings {
+            _name: name,
+            _description: description,
+            _savings_type: savings_type,
+            is_sol,
+            amount,
+            _time_lock: _time_lock,
+            _unlock_price: _unlock_price,
+        }),
+    };
+}

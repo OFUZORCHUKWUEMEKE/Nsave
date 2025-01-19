@@ -29,7 +29,7 @@ pub struct Deposit<'info> {
     pub token_vault_account: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
     #[account(
         mut,
-        seeds=[b"vault",signer.key().as_ref()],
+        seeds=[b"protocol",signer.key().as_ref()],
         bump
     )]
     pub protocol_state: Account<'info, ProtocolState>,

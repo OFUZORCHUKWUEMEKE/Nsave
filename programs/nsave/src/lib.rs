@@ -34,4 +34,27 @@ pub mod nsave {
         );
         Ok(())
     }
+
+    pub fn deposit_savings(
+        ctx: Context<Deposit>,
+        _name: String,
+        _description: String,
+        _savings_type: SavingsType,
+        is_sol: bool,
+        amount: u64,
+        _time_lock: Option<i64>,
+        _unlock_price: Option<u64>,
+    ) -> Result<()> {
+        deposit_handler(
+            ctx,
+            _name,
+            _description,
+            _savings_type,
+            is_sol,
+            amount,
+            _time_lock,
+            _unlock_price,
+        );
+        Ok(())
+    }
 }
