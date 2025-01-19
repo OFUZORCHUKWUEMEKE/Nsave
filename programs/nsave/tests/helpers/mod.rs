@@ -99,7 +99,7 @@ pub fn deposit(
     _time_lock: Option<i64>,
     _unlock_price: Option<u64>,
 ) -> Instruction {
-    let user_ata = Pubkey::new_unique();
+    let user_ata = get_associated_token_address_with_program_id(&signer, &mint, &token_program);
     return Instruction {
         program_id,
         accounts: anchor_lang::ToAccountMetas::to_account_metas(

@@ -57,6 +57,7 @@ pub fn deposit_handler(
 ) -> Result<()> {
     let vault_sol_account = &mut ctx.accounts.savings_account;
     let protocol_state = &mut ctx.accounts.protocol_state;
+    let current_time = Clock::get()?.unix_timestamp;
     if is_sol == true {
         let cpi_ctx = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
@@ -67,6 +68,7 @@ pub fn deposit_handler(
         );
         anchor_lang::system_program::transfer(cpi_ctx, amount);
         protocol_state.total_sol_saved.checked_add(amount);
+        protocol_state.last_updated = current_time;
     } else {
         let transfer_cpi_accounts = TransferChecked {
             from: ctx.accounts.user_ata.to_account_info(),
@@ -80,6 +82,7 @@ pub fn deposit_handler(
 
         token_interface::transfer_checked(cpi_ctx, amount, decimals)?;
         protocol_state.total_usdc_saved.checked_add(amount);
+        protocol_state.last_updated = current_time;
     }
     Ok(())
 }

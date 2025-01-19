@@ -50,6 +50,7 @@ pub fn initialize(
     unlock_price: Option<u64>,
 ) -> Result<()> {
     let savings_account = &mut ctx.accounts.savings_account;
+    // let protocol_account = &mut ctx.accounts.protocol;
     savings_account.name = name;
     savings_account.description = description;
     savings_account.savings_type = savings_type;
