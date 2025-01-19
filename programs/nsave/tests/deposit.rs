@@ -152,4 +152,16 @@ async fn test_successful_deposit() {
 
     transaction.sign(&[&context.payer, &maker], context.last_blockhash);
     let result = context.banks_client.process_transaction(transaction).await;
+
+    let savings_account = context
+        .banks_client
+        .get_account(savings_pubkey)
+        .await
+        .unwrap()
+        .unwrap(); // assert!(savings_account.is_some(), "Escrow account should still exist");
+
+    // let savings_account = MySavingsAccount::try_deserialize(&mut &account_data[..])?;
+    let savings_data = SavingsAccount::try_deserialize(&mut &savings_account.data[..]).unwrap();
+
+    assert_eq!(savings_data.is_active, false);
 }

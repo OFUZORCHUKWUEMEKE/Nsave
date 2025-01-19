@@ -84,6 +84,7 @@ async fn test_successful_initiate() {
     // Deserialize the account data
     let mut account_data = savings.data.as_ref();
     let escrow_account = SavingsAccount::try_deserialize(&mut account_data).unwrap();
+    
 
     assert_eq!(escrow_account.owner, maker.pubkey());
     assert_eq!(escrow_account.amount, 1000);
