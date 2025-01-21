@@ -91,9 +91,6 @@ describe("Savings", () => {
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             systemProgram: SYSTEM_PROGRAM_ID
         }).signers([maker]).rpc().then(confirm);
-        const savings = await provider.connection.getBalance(savings_account);
-        // console.log(savings)
-
         // console.log("SavingsAccount after initialization", (await provider.connection.getBalance(savings_account)));
         // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
         console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
