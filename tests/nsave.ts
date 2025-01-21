@@ -28,11 +28,11 @@ describe("Savings", () => {
     let data = {
         name: "emeke",
         description: "testing",
-        isSol: true,
+        isSol: false,
         savingsType: { timeLockedSavings: {} }
     };
-    const amount = new anchor.BN(2 * LAMPORTS_PER_SOL); // 1 SOL
-    // const amount = new anchor.BN(0.1 * Math.pow(10, 6));
+    // const amount = new anchor.BN(2 * LAMPORTS_PER_SOL); // 1 SOL
+    const amount = new anchor.BN(0.1 * Math.pow(10, 6));
     const lockDuration = new anchor.BN(0);
     const unlockPrice = null;
 
@@ -67,6 +67,7 @@ describe("Savings", () => {
         const mintTx = await mintTo(provider.connection, wallet.payer, mint, userATA, provider.publicKey, 1_000_000_0);
         // console.log('Minted 10 tokens to contributor', mintTx);
         console.log("SavingsAccount before Initialization", (await provider.connection.getBalance(savings_account)));
+        console.log("SignerAccount before Initialization", (await provider.connection.getBalance(maker.publicKey)));
     });
 
     it("Initialize Savings", async () => {
@@ -93,20 +94,12 @@ describe("Savings", () => {
         const savings = await provider.connection.getBalance(savings_account);
         // console.log(savings)
 
-        console.log("SavingsAccount after initialization", (await provider.connection.getBalance(savings_account)));
-        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        // console.log("SavingsAccount after initialization", (await provider.connection.getBalance(savings_account)));
+        // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
         // expect()
 
     })
-
-    // it("Persist", async () => {
-    //     const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
-    //     console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
-    //     console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
-
-    // })
-
-
 
     it("Deposit SOL", async () => {
         const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
@@ -131,8 +124,10 @@ describe("Savings", () => {
         }).signers([maker]).rpc().then(confirm);
 
         // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
-        console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
-        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        // console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+
+        console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
 
     })
 
@@ -146,8 +141,9 @@ describe("Savings", () => {
             data.savingsType,
             data.isSol,
             amount,
+            unlockPrice,
             lockDuration,
-            unlockPrice
+
         ).accountsPartial({
             signer: maker.publicKey,
             savingsAccount: savings_account,
@@ -159,9 +155,9 @@ describe("Savings", () => {
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             systemProgram: SYSTEM_PROGRAM_ID
         }).rpc().then(confirm);
-        // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
-        // console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
-        console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
-        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
+        console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
+        // console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
     })
 })
