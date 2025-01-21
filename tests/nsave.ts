@@ -118,6 +118,8 @@ describe("Savings", () => {
     })
 
     it("withdraw", async () => {
+        const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
 
+        
     })
 })

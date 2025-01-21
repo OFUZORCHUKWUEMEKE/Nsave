@@ -8,7 +8,6 @@ mod state;
 use instructions::*;
 pub use state::*;
 
-
 declare_id!("3nQpqWfTaTuUobguS1a5pUd5aguyUK7d6SDCnUWr8kmQ");
 
 #[program]
@@ -58,6 +57,20 @@ pub mod nsave {
             _time_lock,
             _unlock_price,
         );
+        Ok(())
+    }
+
+    pub fn withdraw(
+        ctx: Context<Withdraw>,
+        _name: String,
+        _description: String,
+        _savings_type: SavingsType,
+        _is_sol: bool,
+        amount: u64,
+        unlock_price: Option<u64>,
+        lock_duration: Option<i64>,
+    ) -> Result<()> {
+        withdraw_handler(ctx, amount, unlock_price, lock_duration);
         Ok(())
     }
 }
