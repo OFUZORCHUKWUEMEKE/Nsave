@@ -16,4 +16,6 @@ pub enum NonceError {
     PriceNotReached,
     #[msg("Invalid Price Feed")]
     InvalidPriceFeed,
+    #[msg("Numerical Overflow")]
+    NumericalOverflow
 }
