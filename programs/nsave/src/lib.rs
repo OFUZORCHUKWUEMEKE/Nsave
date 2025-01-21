@@ -69,9 +69,9 @@ pub mod nsave {
         _is_sol: bool,
         amount: u64,
         unlock_price: Option<u64>,
-        lock_duration: Option<i64>,
+        lock_duration: i64,
     ) -> Result<()> {
-        withdraw_handler(ctx, amount, unlock_price, lock_duration);
+        withdraw_handler(ctx, amount, lock_duration);
         Ok(())
     }
 }
