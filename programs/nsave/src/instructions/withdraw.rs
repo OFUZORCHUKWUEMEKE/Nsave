@@ -70,6 +70,13 @@ pub fn withdraw_handler(
         savings_account.description.as_bytes(),
         &[savings_account.bump],
     ];
+
+    //     let seeds = &[
+    //         ctx.accounts.savings_account.name.as_bytes(),
+    //         ctx.accounts.signer.to_account_info().key.as_ref(),
+    //         ctx.accounts.savings_account.description.as_bytes(),
+    //         &[ctx.accounts.savings_account.bump],
+    //     ];
     let signer_seeds_ref: &[&[&[u8]]] = &[signer_seeds];
 
     if savings_account.is_sol {
