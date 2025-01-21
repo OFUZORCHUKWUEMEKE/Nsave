@@ -70,56 +70,36 @@ pub fn withdraw_handler(
     let signer_seeds = [&seeds[..]];
     let signer_account = &mut ctx.accounts.signer;
 
-    match savings_account.savings_type {
-        SavingsType::PriceLockedSavings => {
-            if savings_account.is_sol {
-                // let sol_feed_id = get_feed_id_from_hex(SOL_USD_FEED_ID);
-                // let sol_price = price_update.get_price_no_older_than(
-                //     &Clock::get()?,
-                //     MAXIMUM_AGE,
-                //     &sol_feed_id?,
-                // )?;
-                // msg!(
-                //     "sol price is {} sol conf is {} ",
-                //     sol_price.price,
-                //     sol_price.conf
-                // );
-            }
+    if savings_account.is_sol == true {
+        let current_timestamp = Clock::get()?.unix_timestamp;
+        if current_timestamp >= savings_account.created_at + lock_duration.unwrap() {
+            let cpi_ctx = CpiContext::new_with_signer(
+                ctx.accounts.system_program.to_account_info(),
+                anchor_lang::system_program::Transfer {
+                    from: savings_account.to_account_info(),
+                    to: signer_account.to_account_info(),
+                },
+                &signer_seeds,
+            );
+            anchor_lang::system_program::transfer(cpi_ctx, amount);
+        } else {
+            return Err(NonceError::FundsStillLocked.into());
         }
-        _ => {
-            if savings_account.is_sol == true {
-                let current_timestamp = Clock::get()?.unix_timestamp;
-                if current_timestamp >= savings_account.created_at + lock_duration.unwrap() {
-                    let cpi_ctx = CpiContext::new_with_signer(
-                        ctx.accounts.system_program.to_account_info(),
-                        anchor_lang::system_program::Transfer {
-                            from: savings_account.to_account_info(),
-                            to: signer_account.to_account_info(),
-                        },
-                        &signer_seeds,
-                    );
-                    anchor_lang::system_program::transfer(cpi_ctx, amount);
-                } else {
-                    return Err(NonceError::FundsStillLocked.into());
-                }
-            } else {
-                let current_timestamp = Clock::get()?.unix_timestamp;
-                if current_timestamp >= savings_account.created_at + lock_duration.unwrap() {
-                    let cpi_program = ctx.accounts.token_program.to_account_info();
-                    let decimals = ctx.accounts.mint.decimals;
-                    let transfer_accounts = TransferChecked {
-                        from: ctx.accounts.token_vault_account.to_account_info(),
-                        to: ctx.accounts.user_ata.to_account_info(),
-                        authority: savings_account.to_account_info(),
-                        mint: ctx.accounts.mint.to_account_info(),
-                    };
-                    let ctx =
-                        CpiContext::new_with_signer(cpi_program, transfer_accounts, &signer_seeds);
-                    token_interface::transfer_checked(ctx, amount, decimals)?;
-                } else {
-                    return Err(NonceError::FundsStillLocked.into());
-                }
-            }
+    } else {
+        let current_timestamp = Clock::get()?.unix_timestamp;
+        if current_timestamp >= savings_account.created_at + lock_duration.unwrap() {
+            let cpi_program = ctx.accounts.token_program.to_account_info();
+            let decimals = ctx.accounts.mint.decimals;
+            let transfer_accounts = TransferChecked {
+                from: ctx.accounts.token_vault_account.to_account_info(),
+                to: ctx.accounts.user_ata.to_account_info(),
+                authority: savings_account.to_account_info(),
+                mint: ctx.accounts.mint.to_account_info(),
+            };
+            let ctx = CpiContext::new_with_signer(cpi_program, transfer_accounts, &signer_seeds);
+            token_interface::transfer_checked(ctx, amount, decimals)?;
+        } else {
+            return Err(NonceError::FundsStillLocked.into());
         }
     }
 

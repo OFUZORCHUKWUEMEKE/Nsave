@@ -28,12 +28,12 @@ describe("Savings", () => {
     let data = {
         name: "emeke",
         description: "testing",
-        isSol: false,
+        isSol: true,
         savingsType: { timeLockedSavings: {} }
     };
-    // const amount = new anchor.BN(2 * LAMPORTS_PER_SOL); // 1 SOL
-    const amount = new anchor.BN(0.1 * Math.pow(10, 6));
-    const lockDuration = new anchor.BN(7 * 24 * 60 * 60);
+    const amount = new anchor.BN(2 * LAMPORTS_PER_SOL); // 1 SOL
+    // const amount = new anchor.BN(0.1 * Math.pow(10, 6));
+    const lockDuration = new anchor.BN(0);
     const unlockPrice = null;
 
     let mint: anchor.web3.PublicKey;
@@ -107,57 +107,58 @@ describe("Savings", () => {
 
 
 
-    // it("Deposit SOL", async () => {
-    //     const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
+    it("Deposit SOL", async () => {
+        const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
 
-    //     const tx = await program.methods.depositSavings(
-    //         data.name,
-    //         data.description,
-    //         data.savingsType,
-    //         data.isSol,
-    //         amount,
-    //         lockDuration,
-    //         unlockPrice
-    //     ).accountsPartial({
-    //         signer: maker.publicKey,
-    //         savingsAccount: savings_account,
-    //         tokenVaultAccount: vault,
-    //         protocolState: protocol_account,
-    //         userAta: userATA,
-    //         tokenProgram: TOKEN_PROGRAM_ID,
-    //         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    //         systemProgram: SYSTEM_PROGRAM_ID, mint
-    //     }).signers([maker]).rpc().then(confirm);
+        const tx = await program.methods.depositSavings(
+            data.name,
+            data.description,
+            data.savingsType,
+            data.isSol,
+            amount,
+            lockDuration,
+            unlockPrice
+        ).accountsPartial({
+            signer: maker.publicKey,
+            savingsAccount: savings_account,
+            tokenVaultAccount: vault,
+            protocolState: protocol_account,
+            userAta: userATA,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            systemProgram: SYSTEM_PROGRAM_ID, mint
+        }).signers([maker]).rpc().then(confirm);
 
-    //     // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
-    //     console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
+        console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
 
-    // })
+    })
 
-    // it("withdraw", async () => {
-    //     const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
-    //     // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
+    it("withdraw", async () => {
+        const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
+        // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
 
-    //     const tx = program.methods.withdraw(
-    //         data.name,
-    //         data.description,
-    //         data.savingsType,
-    //         data.isSol,
-    //         amount,
-    //         lockDuration,
-    //         unlockPrice
-    //     ).accountsPartial({
-    //         signer: maker.publicKey,
-    //         savingsAccount: savings_account,
-    //         mint,
-    //         tokenVaultAccount: vault,
-    //         protocolState: protocol_account,
-    //         userAta: userATA,
-    //         tokenProgram: TOKEN_PROGRAM_ID,
-    //         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    //         systemProgram: SYSTEM_PROGRAM_ID
-    //     }).rpc().then(confirm)
-    //     console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
-    //     console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
-    // })
+        const tx = program.methods.withdraw(
+            data.name,
+            data.description,
+            data.savingsType,
+            data.isSol,
+            amount,
+            lockDuration,
+            unlockPrice
+        ).accountsPartial({
+            signer: maker.publicKey,
+            savingsAccount: savings_account,
+            mint,
+            tokenVaultAccount: vault,
+            protocolState: protocol_account,
+            userAta: userATA,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+            systemProgram: SYSTEM_PROGRAM_ID
+        }).rpc().then(confirm);
+        // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
+        // console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
+        console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+    })
 })
