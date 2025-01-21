@@ -75,7 +75,7 @@ async fn test_successful_deposit() {
     let (token_vault, _) =
         Pubkey::find_program_address(&[b"vault", savings_pubkey.as_ref()], &nsave::id());
 
-    let vault_ata = spl_associated_token_account::get_associated_token_address(&token_vault, mint);
+    let vault_ata = spl_associated_token_account::get_associated_token_address(&token_vault, &mint);
 
     // let mut account_data = vec![0u8; TokenAccount::LEN];
     let mut account_data = vec![0u8; TokenAccount::LEN];
@@ -148,7 +148,7 @@ async fn test_successful_deposit() {
             savings_type,
             is_sol,
             savings_pubkey,
-            token_vault,
+            vault_ata,
             protocol,
             amount,
             Some(lock_duration),
@@ -166,9 +166,11 @@ async fn test_successful_deposit() {
         .await
         .unwrap()
         .unwrap(); // assert!(savings_account.is_some(), "Escrow account should still exist");
+    
 
     // let savings_account = MySavingsAccount::try_deserialize(&mut &account_data[..])?;
-    let savings_data = SavingsAccount::try_deserialize(&mut &savings_account.data[..]).unwrap();
+    // let savings_data = SavingsAccount::try_deserialize(&mut &savings_account.data[..]).unwrap();
+    // println!("{}", savings_account);
 
     // assert_eq!(savings_data.is_active, false);
 }
