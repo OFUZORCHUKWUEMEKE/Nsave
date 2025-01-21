@@ -94,6 +94,7 @@ describe("Savings", () => {
         // console.log(savings)
 
         console.log("SavingsAccount after initialization", (await provider.connection.getBalance(savings_account)));
+        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
         // expect()
 
     })
@@ -131,6 +132,7 @@ describe("Savings", () => {
 
         // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
         console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
 
     })
 
@@ -160,5 +162,6 @@ describe("Savings", () => {
         // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
         // console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
         console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
     })
 })
