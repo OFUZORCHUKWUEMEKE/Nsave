@@ -120,7 +120,7 @@ describe("Savings", () => {
             systemProgram: SYSTEM_PROGRAM_ID, mint
         }).signers([maker]).rpc().then(confirm);
 
-        // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
+        console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
         // console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
         // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
 
@@ -151,7 +151,7 @@ describe("Savings", () => {
             tokenProgram: TOKEN_PROGRAM_ID,
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             systemProgram: SYSTEM_PROGRAM_ID
-        }).rpc().then(confirm);
+        }).signers([maker]).rpc();
         console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
         console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
         // console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
