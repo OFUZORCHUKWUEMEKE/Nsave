@@ -166,7 +166,6 @@ async fn test_successful_deposit() {
         .await
         .unwrap()
         .unwrap(); // assert!(savings_account.is_some(), "Escrow account should still exist");
-    
 
     // let savings_account = MySavingsAccount::try_deserialize(&mut &account_data[..])?;
     // let savings_data = SavingsAccount::try_deserialize(&mut &savings_account.data[..]).unwrap();

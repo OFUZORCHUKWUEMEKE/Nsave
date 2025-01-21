@@ -23,8 +23,8 @@ pub struct Deposit<'info> {
     pub savings_account: Box<Account<'info, SavingsAccount>>,
     #[account(
         mut,
-        seeds=[b"vault",savings_account.key().as_ref()],
-        bump
+        associated_token::mint = mint,
+        associated_token::authority = savings_account
     )]
     pub token_vault_account: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
     #[account(

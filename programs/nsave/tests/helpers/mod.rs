@@ -68,6 +68,7 @@ pub fn initialize(
                 savings_account: savings_pubkey,
                 token_program: token_program_id,
                 system_program: system_program::id(),
+                associated_token_program:spl_associated_token_account::id()
             },
             None,
         ),

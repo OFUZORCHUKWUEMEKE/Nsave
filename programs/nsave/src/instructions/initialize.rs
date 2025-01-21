@@ -1,6 +1,7 @@
 use crate::constants::*;
 use crate::state::*;
 use anchor_lang::prelude::*;
+use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token_interface;
 use anchor_spl::token_interface::Mint;
 
@@ -21,10 +22,8 @@ pub struct InitializeSavings<'info> {
     #[account(
         init_if_needed,
         payer=signer,
-        token::authority= savings_account,
-        token::mint = mint,
-        seeds=[b"vault",savings_account.key().as_ref()],
-        bump
+        associated_token::authority= savings_account,
+        associated_token::mint = mint,
     )]
     pub token_vault_account: Box<InterfaceAccount<'info, token_interface::TokenAccount>>,
     #[account(
@@ -37,6 +36,7 @@ pub struct InitializeSavings<'info> {
     pub savings_account: Box<Account<'info, SavingsAccount>>,
     pub token_program: Interface<'info, token_interface::TokenInterface>,
     pub system_program: Program<'info, System>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 pub fn initialize(
