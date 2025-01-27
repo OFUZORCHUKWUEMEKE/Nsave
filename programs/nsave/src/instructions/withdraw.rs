@@ -19,7 +19,7 @@ pub struct Withdraw<'info> {
     pub signer: Signer<'info>,
     #[account(
         mut,
-        close=signer,
+        // close=signer,
         seeds=[name.as_bytes(),signer.key().as_ref(),description.as_bytes()],
         bump=savings_account.bump
     )]

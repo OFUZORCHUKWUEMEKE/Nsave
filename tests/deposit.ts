@@ -68,12 +68,82 @@
 //         );
 //     });
 
-//     it("should deposit SOL into the savings account", async () => {
+//     // it("should deposit SOL into the savings account", async () => {
+//     //     const name = "Test Savings";
+//     //     const description = "This is a test savings account";
+//     //     const isSol = true;
+//     //     const savingsType = { timeLockedSavings: {} };
+//     //     const amount = new anchor.BN(100_000_000); // 0.1 SOL (in lamports)
+//     //     const lockDuration = new anchor.BN(30 * 24 * 60 * 60); // 30 days in seconds
+
+//     //     // Create the user's associated token account (ATA) if it doesn't exist
+//     //     const userAta = await getAssociatedTokenAddress(
+//     //         mint, // Mint address (e.g., USDC or SOL)
+//     //         provider.wallet.publicKey // Owner of the ATA
+//     //     );
+
+//     //     const userAtaInfo = await provider.connection.getAccountInfo(userAta);
+//     //     if (!userAtaInfo) {
+//     //         console.log("Creating user ATA...");
+//     //         await createAssociatedTokenAccount(
+//     //             provider.connection,
+//     //             wallet.payer, // Payer
+//     //             mint, // Mint address
+//     //             provider.wallet.publicKey // Owner of the ATA
+//     //         );
+//     //     }
+
+
+//     //     await program.methods.initializeSavings(
+//     //         name,
+//     //         description,
+//     //         isSol,
+//     //         savingsType,
+//     //         amount,
+//     //         lockDuration
+//     //     ).accountsPartial({
+//     //         signer: provider.wallet.publicKey,
+//     //         mint: mint,
+//     //         protocol: protocolAccount,
+//     //         tokenVaultAccount: tokenVaultAccount,
+//     //         savingsAccount: savingsAccount,
+//     //         tokenProgram: TOKEN_PROGRAM_ID,
+//     //         systemProgram: SystemProgram.programId,
+//     //         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+//     //     }).rpc();
+
+//     //     await program.methods.depositSavings(
+//     //         name,
+//     //         description,
+//     //         savingsType,
+//     //         isSol,
+//     //         amount,
+//     //         lockDuration,
+//     //         null // unloc
+//     //     ).accountsPartial({
+//     //         signer: provider.wallet.publicKey,
+//     //         savingsAccount: savingsAccount,
+//     //         tokenVaultAccount: tokenVaultAccount,
+//     //         protocolState: protocolAccount,
+//     //         mint: mint,
+//     //         userAta: userAta,
+//     //         tokenProgram: TOKEN_PROGRAM_ID,
+//     //         systemProgram: SystemProgram.programId,
+//     //         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+//     //     }).rpc();
+
+//     //     const account = await program.account.savingsAccount.fetch(savingsAccount);
+//     //     assert.ok(account.amount.eq(amount)); // Check if the amount matches
+//     //     assert.ok(account.isSol === isSol); // Check if it's a SOL deposit
+//     // })
+
+//     it("should deposit USDC into the savings account", async () => {
 //         const name = "Test Savings";
 //         const description = "This is a test savings account";
-//         const isSol = true;
+//         const isSol = false;
 //         const savingsType = { timeLockedSavings: {} };
-//         const amount = new anchor.BN(100_000_000); // 0.1 SOL (in lamports)
+//         // const amount = new anchor.BN(100_000_000); // 100 USDC (assuming 6 decimals)
+//         const amount = new anchor.BN(0.1 * Math.pow(10, 6));
 //         const lockDuration = new anchor.BN(30 * 24 * 60 * 60); // 30 days in seconds
 
 //         // Create the user's associated token account (ATA) if it doesn't exist
@@ -93,6 +163,10 @@
 //             );
 //         }
 
+//         const mintTx = await mintTo(provider.connection, wallet.payer, mint, userAta, provider.publicKey, 1_000_000_000);
+//         // console.log('Minted 10 tokens to contributor', mintTx);
+
+
 
 //         await program.methods.initializeSavings(
 //             name,
@@ -110,8 +184,10 @@
 //             tokenProgram: TOKEN_PROGRAM_ID,
 //             systemProgram: SystemProgram.programId,
 //             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-//         }).rpc();
+//         }).rpc()
 
+
+//         // Deposit USDC into the savings account
 //         await program.methods.depositSavings(
 //             name,
 //             description,
@@ -119,7 +195,7 @@
 //             isSol,
 //             amount,
 //             lockDuration,
-//             null // unloc
+//             null // unlockPrice (not used for USDC deposits)
 //         ).accountsPartial({
 //             signer: provider.wallet.publicKey,
 //             savingsAccount: savingsAccount,
@@ -130,12 +206,16 @@
 //             tokenProgram: TOKEN_PROGRAM_ID,
 //             systemProgram: SystemProgram.programId,
 //             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-//         }).rpc();
+//         }).rpc()
 
+//         // Fetch the savings account and verify the deposit
 //         const account = await program.account.savingsAccount.fetch(savingsAccount);
 //         assert.ok(account.amount.eq(amount)); // Check if the amount matches
-//         assert.ok(account.isSol === isSol); // Check if it's a SOL deposit
+//         assert.ok(account.isSol === isSol);
 //     })
+
+//     // Initialize the savings account first
+
 // })
 
 
