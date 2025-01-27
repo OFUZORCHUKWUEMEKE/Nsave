@@ -56,7 +56,7 @@ async fn test_successful_initiate() {
             name.to_string(),
             description.to_string(),
             is_sol,
-            Some(lock_duration),
+            lock_duration,
             Some(unlock_price),
             SavingsType::TimeLockedSavings,
             amount,

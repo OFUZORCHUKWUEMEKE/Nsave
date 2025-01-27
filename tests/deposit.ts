@@ -8,7 +8,8 @@
 //     getAssociatedTokenAddressSync,
 //     getOrCreateAssociatedTokenAccount,
 //     mintTo,
-//     getAssociatedTokenAddress
+//     getAssociatedTokenAddress,
+//     createAssociatedTokenAccount
 // } from '@solana/spl-token';
 // import { Nsave } from '../target/types/nsave';
 // import { PublicKey, SystemProgram } from '@solana/web3.js';
@@ -16,7 +17,7 @@
 // import { SYSTEM_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/native/system';
 // import { assert, expect } from 'chai';
 
-// describe('savings-platform', () => {
+// describe("Nsave", () => {
 //     const provider = anchor.AnchorProvider.env();
 
 //     anchor.setProvider(provider);
@@ -27,12 +28,10 @@
 //     let tokenVaultAccount: PublicKey;
 //     let savingsAccount: PublicKey;
 //     let protocolAccount: PublicKey;
-
-
+//     let userAta: PublicKey;
 //     const wallet = provider.wallet as NodeWallet;
 
 //     before(async () => {
-
 //         mint = await createMint(
 //             provider.connection,
 //             wallet.payer,
@@ -41,13 +40,13 @@
 //             6 // Decimals for USDC
 //         );
 
-
 //         // Derive the protocol account address
 //         [protocolAccount] = await PublicKey.findProgramAddressSync(
 //             [Buffer.from("protocol"), provider.wallet.publicKey.toBuffer()],
 //             program.programId
 //         );
 
+//         // Derive the savings account address
 //         const name = "Test Savings";
 //         const description = "This is a test savings account";
 //         [savingsAccount] = await PublicKey.findProgramAddressSync(
@@ -55,20 +54,44 @@
 //             program.programId
 //         );
 
+//         // Derive the token vault account address
 //         tokenVaultAccount = await getAssociatedTokenAddress(
 //             mint,
 //             savingsAccount,
 //             true
 //         );
-//     })
 
-//     it("should initialize a savigs account", async () => {
+//         // Derive the user's associated token account (ATA)
+//         userAta = await getAssociatedTokenAddress(
+//             mint,
+//             provider.wallet.publicKey
+//         );
+//     });
+
+//     it("should deposit SOL into the savings account", async () => {
 //         const name = "Test Savings";
 //         const description = "This is a test savings account";
-//         const isSol = false;
+//         const isSol = true;
 //         const savingsType = { timeLockedSavings: {} };
-//         const amount = new anchor.BN(1000); // 1000 USDC
+//         const amount = new anchor.BN(100_000_000); // 0.1 SOL (in lamports)
 //         const lockDuration = new anchor.BN(30 * 24 * 60 * 60); // 30 days in seconds
+
+//         // Create the user's associated token account (ATA) if it doesn't exist
+//         const userAta = await getAssociatedTokenAddress(
+//             mint, // Mint address (e.g., USDC or SOL)
+//             provider.wallet.publicKey // Owner of the ATA
+//         );
+
+//         const userAtaInfo = await provider.connection.getAccountInfo(userAta);
+//         if (!userAtaInfo) {
+//             console.log("Creating user ATA...");
+//             await createAssociatedTokenAccount(
+//                 provider.connection,
+//                 wallet.payer, // Payer
+//                 mint, // Mint address
+//                 provider.wallet.publicKey // Owner of the ATA
+//             );
+//         }
 
 
 //         await program.methods.initializeSavings(
@@ -89,15 +112,30 @@
 //             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 //         }).rpc();
 
+//         await program.methods.depositSavings(
+//             name,
+//             description,
+//             savingsType,
+//             isSol,
+//             amount,
+//             lockDuration,
+//             null // unloc
+//         ).accountsPartial({
+//             signer: provider.wallet.publicKey,
+//             savingsAccount: savingsAccount,
+//             tokenVaultAccount: tokenVaultAccount,
+//             protocolState: protocolAccount,
+//             mint: mint,
+//             userAta: userAta,
+//             tokenProgram: TOKEN_PROGRAM_ID,
+//             systemProgram: SystemProgram.programId,
+//             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+//         }).rpc();
 
-//         // Fetch the savings account and verify its data
 //         const account = await program.account.savingsAccount.fetch(savingsAccount);
-//         assert.ok(account.name === name);
-//         assert.ok(account.description === description);
-//         assert.ok(account.owner.equals(provider.wallet.publicKey));
-//         // assert.ok(account.amount === amount.toNumber());
-//         // assert.ok(account.lockDuration === lockDuration.toNumber());
+//         assert.ok(account.amount.eq(amount)); // Check if the amount matches
+//         assert.ok(account.isSol === isSol); // Check if it's a SOL deposit
 //     })
-
-
 // })
+
+

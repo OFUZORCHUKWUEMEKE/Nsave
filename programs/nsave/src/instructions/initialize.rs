@@ -46,8 +46,7 @@ pub fn initialize(
     is_sol: bool,
     savings_type: SavingsType,
     amount: u64,
-    lock_duration: Option<i64>,
-    unlock_price: Option<u64>,
+    lock_duration: i64,
 ) -> Result<()> {
     let savings_account = &mut ctx.accounts.savings_account;
     // let protocol_account = &mut ctx.accounts.protocol;
@@ -64,15 +63,6 @@ pub fn initialize(
     } else {
         savings_account.amount = amount;
     }
-    if lock_duration.is_some() {
-        savings_account.lock_duration = lock_duration.unwrap();
-    } else {
-        savings_account.lock_duration = 0
-    }
-    if unlock_price.is_some() {
-        savings_account.unlock_price = unlock_price.unwrap()
-    } else {
-        savings_account.unlock_price = 0;
-    }
+    savings_account.lock_duration = lock_duration;
     Ok(())
 }

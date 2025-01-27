@@ -42,7 +42,7 @@ pub fn initialize(
     name: String,
     description: String,
     is_sol: bool,
-    lock_duration: Option<i64>,
+    lock_duration: i64,
     unlock_price: Option<u64>,
     savings_type: SavingsType,
     amount: u64,
@@ -79,7 +79,6 @@ pub fn initialize(
             savings_type,
             amount,
             lock_duration,
-            unlock_price,
         }),
     };
 }

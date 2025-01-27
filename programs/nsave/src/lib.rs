@@ -3,7 +3,7 @@ use std::str::FromStr;
 use anchor_lang::prelude::*;
 mod constants;
 mod errors;
-mod instructions;
+pub mod instructions;
 mod state;
 mod utils;
 use instructions::*;
@@ -22,8 +22,7 @@ pub mod nsave {
         is_sol: bool,
         savings_type: SavingsType,
         amount: u64,
-        lock_duration: Option<i64>,
-        unlock_price: Option<u64>,
+        lock_duration: i64,
     ) -> Result<()> {
         initialize(
             ctx,
@@ -33,8 +32,7 @@ pub mod nsave {
             savings_type,
             amount,
             lock_duration,
-            unlock_price,
-        );
+        )?;
         Ok(())
     }
 
@@ -57,7 +55,7 @@ pub mod nsave {
             amount,
             _time_lock,
             _unlock_price,
-        );
+        )?;
         Ok(())
     }
 
@@ -71,7 +69,7 @@ pub mod nsave {
         unlock_price: Option<u64>,
         lock_duration: i64,
     ) -> Result<()> {
-        withdraw_handler(ctx, amount, lock_duration);
+        withdraw_handler(ctx, amount, lock_duration)?;
         Ok(())
     }
 }

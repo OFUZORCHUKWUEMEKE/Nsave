@@ -66,9 +66,9 @@ pub fn deposit_handler(
                 to: vault_sol_account.to_account_info(),
             },
         );
-        anchor_lang::system_program::transfer(cpi_ctx, amount);
-        protocol_state.total_sol_saved.checked_add(amount);
-        protocol_state.last_updated = current_time;
+        anchor_lang::system_program::transfer(cpi_ctx, amount)?;
+        protocol_state.total_sol_saved =
+            protocol_state.total_sol_saved.checked_add(amount).unwrap();
     } else {
         let transfer_cpi_accounts = TransferChecked {
             from: ctx.accounts.user_ata.to_account_info(),
@@ -81,9 +81,10 @@ pub fn deposit_handler(
         let decimals = ctx.accounts.mint.decimals;
 
         token_interface::transfer_checked(cpi_ctx, amount, decimals)?;
-        protocol_state.total_usdc_saved.checked_add(amount);
-        protocol_state.last_updated = current_time;
+        protocol_state.total_usdc_saved =
+            protocol_state.total_usdc_saved.checked_add(amount).unwrap();
     }
+    protocol_state.last_updated = current_time;
     Ok(())
 }
 

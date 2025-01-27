@@ -28,11 +28,11 @@ describe("Savings", () => {
     let data = {
         name: "emeke",
         description: "testing",
-        isSol: false,
+        isSol: true,
         savingsType: { timeLockedSavings: {} }
     };
-    // const amount = new anchor.BN(2 * LAMPORTS_PER_SOL); // 1 SOL
-    const amount = new anchor.BN(0.1 * Math.pow(10, 6));
+    const amount = new anchor.BN(2 * LAMPORTS_PER_SOL); // 1 SOL
+    // const amount = new anchor.BN(0.1 * Math.pow(10, 6));
     const lockDuration = new anchor.BN(0);
     const unlockPrice = null;
 
@@ -80,7 +80,6 @@ describe("Savings", () => {
             data.savingsType,
             amount,
             lockDuration,
-            unlockPrice
         ).accountsPartial({
             signer: maker.publicKey,
             mint,
@@ -91,9 +90,11 @@ describe("Savings", () => {
             associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
             systemProgram: SYSTEM_PROGRAM_ID
         }).signers([maker]).rpc().then(confirm);
-        // console.log("SavingsAccount after initialization", (await provider.connection.getBalance(savings_account)));
-        // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
-        console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
+        console.log("SavingsAccount after initialization", (await provider.connection.getBalance(savings_account)));
+        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        console.log("protocol account", (await provider.connection.getBalance(protocol_account)))
+
+        // console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
         // expect()
 
     })
@@ -120,18 +121,18 @@ describe("Savings", () => {
             systemProgram: SYSTEM_PROGRAM_ID, mint
         }).signers([maker]).rpc().then(confirm);
 
-        console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
-        // console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
-        // console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
+        console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
+        console.log("protocol account", (await provider.connection.getBalance(protocol_account)))
 
-        console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
+        // console.log("User ATA", await provider.connection.getTokenAccountBalance(userATA));
 
     })
 
     it("withdraw", async () => {
         const vault = getAssociatedTokenAddressSync(mint, savings_account, true);
         // console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
-
         const tx = program.methods.withdraw(
             data.name,
             data.description,
@@ -140,7 +141,6 @@ describe("Savings", () => {
             amount,
             unlockPrice,
             lockDuration,
-
         ).accountsPartial({
             signer: maker.publicKey,
             savingsAccount: savings_account,
@@ -154,5 +154,8 @@ describe("Savings", () => {
         }).signers([maker]).rpc();
         console.log('Vault Balance', (await provider.connection.getTokenAccountBalance(vault)).value.amount);
         console.log('USER ATA', (await provider.connection.getTokenAccountBalance(userATA)).value.amount);
+
+        console.log("SavingsAccount", (await provider.connection.getBalance(savings_account)));
+        console.log("Signer sent this", (await provider.connection.getBalance(maker.publicKey)));
     })
 })
